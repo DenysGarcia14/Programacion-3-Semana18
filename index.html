@@ -1,10 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socios de la cooperativa</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 48px 20px;
+            font-family: Arial, sans-serif;
+            color: #203044;
+            background: #f1f5f9;
+        }
+
+        main {
+            width: min(760px, 100%);
+            margin: 0 auto;
+            padding: 32px;
+            background: white;
+            border: 1px solid #e1e8f0;
+            border-radius: 16px;
+            box-shadow: 0 12px 32px rgba(24, 49, 79, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+            color: #123f68;
+            font-size: 30px;
+        }
+
+        #estado {
+            display: inline-block;
+            margin: 14px 0 24px;
+            padding: 8px 12px;
+            color: #176344;
+            background: #e6f5ed;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        thead {
+            color: white;
+            background: #09202f;
+        }
+
+        th,
+        td {
+            padding: 15px 18px;
+            text-align: left;
+        }
+
+        th {
+            font-size: 14px;
+            letter-spacing: 0.3px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e8edf2;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f7f9fc;
+        }
+
+        tbody tr:hover {
+            background: #edf5fb;
+        }
+
+        td:first-child {
+            color: #64748b;
+            font-weight: bold;
+        }
+
+        td:last-child {
+            color: #176344;
+            font-weight: bold;
+        }
+
+        @media (max-width: 500px) {
+            body {
+                padding: 24px 12px;
+            }
+
+            main {
+                padding: 22px 16px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            th,
+            td {
+                padding: 12px 10px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-$END$
+<main>
+    <h1>Socios de la cooperativa</h1>
+    <p id="estado">Cargando socios...</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Saldo</th>
+        </tr>
+        </thead>
+        <tbody id="filas"></tbody>
+    </table>
+</main>
+
+<script>
+    fetch("/socios")
+        .then(respuesta => {
+            if (!respuesta.ok) {
+                throw new Error("Error al consultar los socios");
+            }
+            return respuesta.json();
+        })
+        .then(socios => {
+            const filas = document.getElementById("filas");
+
+            socios.forEach(socio => {
+                const fila = document.createElement("tr");
+
+                fila.innerHTML =
+                    "<td>" + socio.id + "</td>" +
+                    "<td>" + socio.nombre + "</td>" +
+                    "<td>$" + socio.saldo + "</td>";
+
+                filas.appendChild(fila);
+            });
+
+            document.getElementById("estado").textContent =
+                socios.length + " socios cargados";
+        })
+        .catch(() => {
+            const estado = document.getElementById("estado");
+            estado.textContent = "No se pudo conectar con el servidor";
+            estado.style.color = "#a12622";
+            estado.style.background = "#fdebea";
+        });
+</script>
 </body>
 </html>

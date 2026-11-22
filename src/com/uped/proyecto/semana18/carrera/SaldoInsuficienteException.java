@@ -1,4 +1,14 @@
 package com.uped.proyecto.semana18.carrera;
 
-public class SaldoInsuficienteException {
+public class SaldoInsuficienteException extends Exception {
+    private final int faltante;
+
+    public SaldoInsuficienteException(String mensaje, int faltante) {
+        super(mensaje);
+        this.faltante = faltante;
+    }
+
+    public int getFaltante() {
+        return faltante;
+    }
 }
